@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { CandidateExtract } from "../types/candidate";
+import { Upload, AlertCircle, CheckCircle2 } from "lucide-react";
 
 type ParseCvResponse = {
   totalPages: number;
@@ -51,113 +52,110 @@ export function CvUploadForm() {
   }
 
   return (
-    <section className="mx-auto max-w-5xl rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <section className="bg-white rounded-2xl shadow-xl p-8">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700">
-            CV en PDF
+          <label className="flex items-center gap-2 text-base font-medium text-slate-700 mb-2">
+            <Upload className="w-4 h-4" />
+            CV en PDF <span className="text-red-500">*</span>
           </label>
-
           <input
             type="file"
             accept="application/pdf"
             onChange={(event) => setFile(event.target.files?.[0] ?? null)}
-            className="block w-full rounded-lg border border-gray-300 p-3 text-sm"
+            className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 bg-slate-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-colors"
           />
         </div>
 
         <button
           type="submit"
           disabled={isLoading}
-          className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
+          className="px-8 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isLoading ? "Procesando..." : "Procesar CV"}
         </button>
 
         {error && (
-          <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
-            {error}
-          </p>
+          <div className="bg-red-50 border-l-4 border-red-500 px-8 py-4 rounded-r-lg">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <h4 className="text-red-800 mb-1">Error al procesar</h4>
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+            </div>
+          </div>
         )}
       </form>
 
       {result && (
-        <div className="mt-8 space-y-6">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">
-              Resultado de extracción
-            </h2>
-            <p className="text-sm text-gray-500">
-              Páginas detectadas: {result.totalPages}
-            </p>
+        <div className="mt-12 space-y-8">
+          <div className="flex items-center gap-3">
+            <CheckCircle2 className="w-6 h-6 text-green-600" />
+            <div>
+              <h2 className="text-xl font-medium text-slate-900">
+                Resultado de extracción
+              </h2>
+              <p className="text-sm text-slate-600">
+                Páginas detectadas: {result.totalPages}
+              </p>
+            </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <EditableField
-              label="Nombre"
-              value={result.candidate.fullName ?? ""}
-            />
-            <EditableField
-              label="Email"
-              value={result.candidate.email ?? ""}
-            />
-            <EditableField
-              label="Teléfono"
-              value={result.candidate.phone ?? ""}
-            />
-            <EditableField
-              label="Ubicación"
-              value={result.candidate.location ?? ""}
-            />
+          <div className="grid md:grid-cols-2 gap-6">
+            <EditableField label="Nombre" value={result.candidate.fullName ?? ""} />
+            <EditableField label="Email" value={result.candidate.email ?? ""} />
+            <EditableField label="Teléfono" value={result.candidate.phone ?? ""} />
+            <EditableField label="Ubicación" value={result.candidate.location ?? ""} />
           </div>
 
           <div>
-            <h3 className="mb-2 font-medium text-gray-900">
+            <h3 className="text-lg font-medium text-slate-900 mb-2">
               Skills técnicas detectadas
             </h3>
             <textarea
               defaultValue={result.candidate.technicalSkills.join(", ")}
-              className="h-24 w-full rounded-lg border border-gray-300 p-3 text-sm"
+              className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 bg-slate-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-colors h-24"
             />
           </div>
 
           <div>
-            <h3 className="mb-2 font-medium text-gray-900">
+            <h3 className="text-lg font-medium text-slate-900 mb-2">
               Skills blandas detectadas
             </h3>
             <textarea
               defaultValue={result.candidate.softSkills.join(", ")}
-              className="h-24 w-full rounded-lg border border-gray-300 p-3 text-sm"
+              className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 bg-slate-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-colors h-24"
             />
           </div>
 
           <div>
-            <h3 className="mb-2 font-medium text-gray-900">
+            <h3 className="text-lg font-medium text-slate-900 mb-2">
               Idiomas detectados
             </h3>
             <textarea
               defaultValue={result.candidate.languages.join(", ")}
-              className="h-20 w-full rounded-lg border border-gray-300 p-3 text-sm"
+              className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 bg-slate-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-colors h-20"
             />
           </div>
 
           <div>
-            <h3 className="mb-2 font-medium text-gray-900">
+            <h3 className="text-lg font-medium text-slate-900 mb-2">
               JSON completo
             </h3>
-            <pre className="max-h-96 overflow-auto rounded-lg bg-gray-100 p-4 text-xs">
+            <pre className="max-h-96 overflow-auto rounded-lg bg-slate-50 p-4 text-xs border-2 border-slate-200">
               {JSON.stringify(result.candidate, null, 2)}
             </pre>
           </div>
 
           <div>
-            <h3 className="mb-2 font-medium text-gray-900">
+            <h3 className="text-lg font-medium text-slate-900 mb-2">
               Texto original extraído
             </h3>
             <textarea
               readOnly
               value={result.candidate.rawText}
-              className="h-96 w-full rounded-lg border border-gray-300 p-3 text-sm"
+              className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 bg-slate-50 h-96"
             />
           </div>
         </div>
@@ -166,21 +164,15 @@ export function CvUploadForm() {
   );
 }
 
-function EditableField({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
+function EditableField({ label, value }: { label: string; value: string }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-medium text-gray-700">
+      <span className="text-base font-medium text-slate-700 mb-2 block">
         {label}
       </span>
       <input
         defaultValue={value}
-        className="w-full rounded-lg border border-gray-300 p-3 text-sm"
+        className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 bg-slate-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-colors"
       />
     </label>
   );
